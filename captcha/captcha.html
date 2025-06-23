@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Joel</title>
+  <title>Just wait a moment</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style type="text/css">
@@ -18,7 +18,55 @@
       background: white;
       width: 390px;
       height: 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
+
+.status {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+#timer {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #666;
+  margin-bottom: 10px;
+  display: none; 
+}
+
+#fail-message {
+  font-size: 0.9rem;
+  color: red;
+  margin-top: 10px;
+}
+
+button#solve {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button#solve:hover {
+  background-color: #45a049;
+}
+
 
     /* Your style here... */
   </style>
@@ -27,7 +75,9 @@
 <body>
   <div id="captcha-container">
     <!-- Add your CAPTCHA here: -->
-    Hello world!
+    <div id="status" >Verify you're a human by doing nothing.</div>
+    <div id="timer" >60</div>
+    <div id="fail-message"></div>
 
     <!-- We've added a sample button. Feel free to remove it: -->
     <button id="solve">
@@ -35,18 +85,59 @@
     </button>
   </div>
 
-  <script type="text/javascript">
-    (function(window, document){
-      // This is how you tell the parent window that the CAPTCHA was successful.
-      function captchaSuccess() {
-        window.top.postMessage("success", '*');
-      }
+<script type="text/javascript">
+  (function(window, document){
+    function captchaSuccess() {
+      window.top.postMessage("success", '*');
+    }
 
-      // Your CAPTCHA code goes here, we've added a simple example below:
-      document.getElementById('solve')
-           .addEventListener('click', () => captchaSuccess());
+    let timeRemaining = 60;
+    let interval;
 
-    })(window, document);
-  </script>
+    const timerElement = document.getElementById('timer');
+    const statusElement = document.getElementById('status');
+    const failElement = document.getElementById('fail-message');
+    const solveButton = document.getElementById('solve');
+    const container = document.getElementById('captcha-container');
+
+
+    solveButton.addEventListener("click", failCaptcha);
+
+    setTimeout(() => {
+      statusElement.textContent = "Verify you're a human by doing nothing.";
+
+      interval = setInterval(() => {
+        timeRemaining--;
+        if (timeRemaining <= 0) {
+          clearInterval(interval);
+          statusElement.textContent = "You're verified!";
+          captchaSuccess();
+        }
+      }, 1000);
+
+   
+      document.addEventListener("mousemove", failCaptcha, {once: true});
+      document.addEventListener("mousedown", failCaptcha, {once: true});
+      document.addEventListener("keydown", failCaptcha, {once: true});
+      document.addEventListener("touchstart", failCaptcha, {once: true});
+
+    }, 2000); 
+
+    function failCaptcha() {
+      clearInterval(interval);
+      statusElement.textContent = "Failed.";
+      failElement.textContent = "Oh no! You shall not pass or try again.";
+
+      solveButton.style.display = 'none';
+      container.style.backgroundColor = '#f44336';
+      statusElement.style.color = 'white';
+      failElement.style.color = 'white';
+
+      setTimeout(() => window.location.reload(), 5000);
+    }
+
+  })(window, document);
+</script>
+    <!-- M3lodica coded this :) -->
 </body>
 </html>
