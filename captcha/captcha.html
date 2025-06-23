@@ -75,7 +75,7 @@ button#solve:hover {
 <body>
   <div id="captcha-container">
     <!-- Add your CAPTCHA here: -->
-    <div id="status" >Verify you're a human by doing nothing.</div>
+    <div id="status" >Verify you're a human by doing nothing. Leaving your mouse inside this box</div>
     <div id="timer" >60</div>
     <div id="fail-message"></div>
 
@@ -104,7 +104,7 @@ button#solve:hover {
     solveButton.addEventListener("click", failCaptcha);
 
     setTimeout(() => {
-      statusElement.textContent = "Verify you're a human by doing nothing.";
+      statusElement.textContent = "Verify you're a human by doing nothing. Leaving your mouse inside this box";
 
       interval = setInterval(() => {
         timeRemaining--;
@@ -133,7 +133,7 @@ button#solve:hover {
       statusElement.style.color = 'white';
       failElement.style.color = 'white';
 
-      setTimeout(() => window.location.reload(), 5000);
+      setTimeout(() => window.location.reload(), 3000);
     }
 
   })(window, document);
